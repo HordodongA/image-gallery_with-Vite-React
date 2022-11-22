@@ -1,4 +1,39 @@
-No starter code is provided. Start from scratch!
+Your favorite project
+
+DIFFICULTY: 4.2
+USEFULNESS: 4.3
+FUN: 4.1
+MATERIALS: 3.8
+Recreate your favorite project (where you used vanilla js) with React.
+
+What are you going to learn?
+- Compare vanilla JS with React side by side
+- Event handling in React
+- React Hooks
+
+TASKS
+Select a project
+Select a project from your previous projects which have event handling, (JSON) data processing, etc. made with (vanilla) JavaScript. You should prepare a plan and review your choice (and plan) with your mentor.
+A project is selected, and planned and your Mentor reviewed it.
+
+Create the project
+Create the selected project with React.
+The project recreated in its full functionality with React.
+
+HINTS
+You don't have to care about the DOM manipulation part in React. It will solve it for you.
+Use Hooks instead of Class Components
+
+BACKGROUND MATERIALS
+React Events: https://reactjs.org/docs/handling-events.html
+React Hooks intro: https://reactjs.org/docs/hooks-intro.html
+React useState Hook: https://reactjs.org/docs/hooks-state.html
+React useEffect Hook: https://reactjs.org/docs/hooks-effect.html
+Use fetch with useEffect: https://designcode.io/react-hooks-handbook-fetch-data-from-an-api
+Create custom useFetch Hook: https://www.smashingmagazine.com/2020/07/custom-react-hook-fetch-cache-data/
+
+
+STARTER CODE: Image Gallery project's backend, database, styles
 
 Image gallery
 DIFFICULTY: 4.2

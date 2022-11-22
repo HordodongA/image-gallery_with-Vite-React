@@ -3,7 +3,7 @@ const fs = require("fs")
 const fileUpload = require('express-fileupload')
 const cors = require("cors")
 const app = express()
-const port = 7766
+const port = 7767
 
 app.use(cors())
 app.use(express.json())
