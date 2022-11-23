@@ -3,12 +3,13 @@ import './App.css'
 
 function App() {
 
+  const URL = "http://localhost:7767/images"
   const [images, setImages] = useState([])
 
   // Get data from server - will be in a separated file
   const fetchData = async () => {
     try {
-      const responseJson = await fetch("http://localhost:7767/images")
+      const responseJson = await fetch(URL)
       const responseObject = responseJson.json()
       return responseObject
     }
@@ -33,16 +34,24 @@ function App() {
   }, [])
 
 
-  const makeDeleteImageFunction = (imageId) => (event) => {
+  // DELETE image: HTTP request and re-render
+  const makeDeleteImageFunction = (imageId) => async (event) => {
     console.log(imageId)
-    console.log(event)
+    const deleteRequestObject = { id: imageId }
+    const options = {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(deleteRequestObject)
+    }
+    const response = await fetch(URL, options)
+    getImagesDatabase()
   }
 
 
   return (
     <div className="App">
 
-{/*       <div id='upload-section'>
+      {/*       <div id='upload-section'>
         Input section
         <form ref='uploadForm' id='uploadForm' action='http://localhost:7767/images' method='post'
           encType="multipart/form-data">
@@ -57,7 +66,7 @@ function App() {
 
       <div id='imageGridContainer'>
         {
-          images.map(image => (
+          images.map(image => ( image &&
             <div key={image.id} id={"card-" + image.id} className="imageCard">
               <div className="removeButton">
                 <span className="material-symbols-outlined" onClick={makeDeleteImageFunction(image.id)}>
