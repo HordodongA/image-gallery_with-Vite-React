@@ -56,7 +56,7 @@ app.post("/images", (req, res) => {
     const dateAndTime = JSON.stringify(new Date()).replaceAll(":", "-").replaceAll("T", "_").replaceAll('"', '').slice(0, 19)     // Format: 2022-10-27_16-09-16
     const uploadedData = {
         id: counterActual,
-        url: `http://127.0.0.1:${port}/images/image_${counterActual}.jpg`,
+        url: `/backend/images/image_${counterActual}.jpg`,
         title: req.body.titleinput,
         photographer: req.body.authorinput,
         uploaded: dateAndTime

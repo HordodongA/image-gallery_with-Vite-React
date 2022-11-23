@@ -31,8 +31,13 @@ input {
 }
 
 #uploadButton {
+  cursor: pointer;
   border-radius: 6px;
   margin: 0 1.5%;
+}
+
+#server-message {
+  display: inline-block;
 }
 
 /* * END OF UPLOAD BAR SECTION */

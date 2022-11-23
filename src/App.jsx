@@ -1,15 +1,24 @@
 import { useEffect, useState } from 'react'
 import './App.css'
 
+const url = "http://localhost:7767/images"
+
+
 function App() {
 
-  const URL = "http://localhost:7767/images"
+  const [titleInput, setTitleInput] = useState("")
+  const [authorInput, setAuthorInput] = useState("")
+  const [fileInputValue, setFileInputValue] = useState("")
+  const [selectedFile, setSelectedFile] = useState({})
+  const [serverMessage, setServerMessage] = useState("")
+
+  // Database
   const [images, setImages] = useState([])
 
-  // Get data from server - will be in a separated file
+  // Get data from server
   const fetchData = async () => {
     try {
-      const responseJson = await fetch(URL)
+      const responseJson = await fetch(url)
       const responseObject = responseJson.json()
       return responseObject
     }
@@ -19,7 +28,6 @@ function App() {
     }
   } // ** returns with an object array
 
-
   // Call Fetch function and set database state
   const getImagesDatabase = async () => {
     const imagesData = await fetchData()
@@ -28,45 +36,102 @@ function App() {
   }
 
 
+
   // Kick in onMount
   useEffect(() => {
     getImagesDatabase()
   }, [])
 
 
-  // DELETE image: HTTP request and re-render
+
+  // REMOVE image: DELETE HTTP request and re-render
   const makeDeleteImageFunction = (imageId) => async (event) => {
-    console.log(imageId)
     const deleteRequestObject = { id: imageId }
     const options = {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(deleteRequestObject)
     }
-    const response = await fetch(URL, options)
+    const response = await fetch(url, options)
     getImagesDatabase()
+  }
+
+
+  // UPLOAD image: POST HTTP request and re-render
+  const uploadHandler = async () => {
+    setServerMessage("")
+    if (!titleInput || !authorInput) {
+      setServerMessage("Please choose a file and fill all fields before uploading!")
+      return false
+    }
+    else {
+      const formData = new FormData()
+      formData.append("titleinput", titleInput)
+      formData.append("authorinput", authorInput)
+      formData.append("fileinput", selectedFile)
+
+      const response = await fetch(url, { method: "POST", body: formData })
+      setServerMessage((response.status === 201) ? "Image and data saved on server." : "Response status: " + response.status)
+      setTitleInput("")
+      setAuthorInput("")
+      setFileInputValue("")
+      setSelectedFile({})
+
+      getImagesDatabase()
+    }
   }
 
 
   return (
     <div className="App">
 
-      {/*       <div id='upload-section'>
-        Input section
-        <form ref='uploadForm' id='uploadForm' action='http://localhost:7767/images' method='post'
-          encType="multipart/form-data">
-          <input type="file" name="fileinput" id="file-input" required />
-          <input type="text" name="titleinput" id="title-input" placeholder="title" maxlength="40" required />
-          <input type="text" name="authorinput" id="author-input" placeholder="author" maxlength="30" required />
-          <input type='submit' id="uploadButton" value='Upload!' />
-          <p style="display: inline-block" id="server-message"></p>
-        </form>
-      </div> */}
+      <div id='upload-section'>
+        <section id='uploadsection'>
+          
+          <input
+            type="file"
+            id="file-input"
+            name="fileinput"
+            value={fileInputValue}
+            onChange={(event) => {
+              setSelectedFile(event.target.files[0])
+              setFileInputValue(event.target.value)
+            }}
+          />
+
+          <input
+            type="text"
+            id="title-input"
+            placeholder="title"
+            maxLength="40"
+            value={titleInput}
+            onChange={event => setTitleInput(event.target.value)}
+          />
+
+          <input
+            type="text"
+            id="author-input"
+            placeholder="author"
+            maxLength="30"
+            value={authorInput}
+            onChange={event => setAuthorInput(event.target.value)}
+          />
+
+          <input
+            type="submit"
+            id="uploadButton"
+            value="Upload!"
+            onClick={uploadHandler}
+          />
+
+          <p id="server-message">{serverMessage}</p>
+        </section>
+      </div>
 
 
       <div id='imageGridContainer'>
         {
-          images.map(image => ( image &&
+          images.map(image => (image &&
             <div key={image.id} id={"card-" + image.id} className="imageCard">
               <div className="removeButton">
                 <span className="material-symbols-outlined" onClick={makeDeleteImageFunction(image.id)}>

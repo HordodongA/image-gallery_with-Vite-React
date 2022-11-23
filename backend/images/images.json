@@ -202,5 +202,11 @@
         "photographer": "Gabor Neubauer",
         "uploaded": "2022-10-27_15-07-16"
     },
-    null
+    {
+        "id": 29,
+        "url": "/backend/images/image_29.jpg",
+        "title": "Random title 29",
+        "photographer": "Gabor Neubauer",
+        "uploaded": "2022-10-27_15-07-16"
+    }
 ]
