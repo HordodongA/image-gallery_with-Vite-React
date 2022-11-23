@@ -5,35 +5,38 @@ function App() {
 
   const [images, setImages] = useState([])
 
-
   // Get data from server - will be in a separated file
   const fetchData = async () => {
     try {
-      const response = await (await fetch("http://localhost:7767/images")).json()
-      return response
+      const responseJson = await fetch("http://localhost:7767/images")
+      const responseObject = responseJson.json()
+      return responseObject
     }
     catch (error) {
-      return error.response
-      // console.error(error)
-    }           // !! Consider adding an error boundary to your tree to customize error handling behavior.
+      console.error(error)
+      return error
+    }
   } // ** returns with an object array
 
 
   // Call Fetch function and set database state
   const getImagesDatabase = async () => {
     const imagesData = await fetchData()
-    console.log(imagesData)
+    // console.log(imagesData)
     setImages(imagesData)
   }
 
 
-  // Kick in logic on mount
+  // Kick in onMount
   useEffect(() => {
     getImagesDatabase()
   }, [])
 
 
-
+  const makeDeleteImageFunction = (imageId) => (event) => {
+    console.log(imageId)
+    console.log(event)
+  }
 
 
   return (
@@ -53,21 +56,20 @@ function App() {
 
 
       <div id='imageGridContainer'>
-        Image Grid
         {
           images.map(image => (
-            <div key={image.id} id={"card-" + image.id} class="imageCard">
-              <div class="removeButton">
-                <span class="material-symbols-outlined">
+            <div key={image.id} id={"card-" + image.id} className="imageCard">
+              <div className="removeButton">
+                <span className="material-symbols-outlined" onClick={makeDeleteImageFunction(image.id)}>
                   delete
                 </span>
               </div>
-              <img src={movie.url} alt={movie.title} />
+              <img src={image.url} alt={image.title} />
               <h4>
-                {movie.title}
+                {image.title}
               </h4>
               <h5>
-                {movie.photographer}
+                {image.photographer}
               </h5>
             </div>
           ))
