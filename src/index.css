@@ -10,6 +10,7 @@ html {
 
 body {
   font-size: 1.6rem;
+  height: 100vh;
   background-color: cadetblue;
   padding-bottom: 2rem;
 }
@@ -18,16 +19,20 @@ body {
 /* ? UPLOAD BAR SECTION */
 
 #upload-section {
+  background-color: rgb(124, 182, 184);
   width: 100%;
   position: fixed;
   left: 0;
   top: 0;
-  padding-top: 1rem;
+  padding: 1rem 0;
+  z-index: 99;
+  box-shadow: 0 10px 10px -5px rgb(51, 51, 184);
 }
 
 input {
-  border-radius: 3px;
+  border-radius: 6px;
   padding: 0.5%;
+  margin-left: 1rem;
 }
 
 #uploadButton {
@@ -38,6 +43,9 @@ input {
 
 #server-message {
   display: inline-block;
+  font-size: 2rem;
+  font-weight: bold;
+  color: navy;
 }
 
 /* * END OF UPLOAD BAR SECTION */
@@ -47,7 +55,7 @@ input {
 
 #imageGridContainer {
   width: 100%;
-  padding: 6rem 2rem 2rem;
+  padding: 7.5rem 2rem 2rem;
 
   display: flex;
   flex-wrap: wrap;
@@ -81,7 +89,7 @@ h5 {
 .removeButton {
   background-color: rgba(255, 255, 255, 0.6);
   border-radius: 3px;
-  z-index: 99;
+  z-index: 90;
   position: absolute;
   margin-top: 0.5rem;
   margin-right: 0.5rem;

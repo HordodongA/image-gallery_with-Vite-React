@@ -5,18 +5,19 @@ const url = "http://localhost:7767/images"
 
 
 function App() {
+  
+  // Database
+  const [images, setImages] = useState([])
 
   const [titleInput, setTitleInput] = useState("")
   const [authorInput, setAuthorInput] = useState("")
   const [fileInputValue, setFileInputValue] = useState("")
   const [selectedFile, setSelectedFile] = useState({})
   const [serverMessage, setServerMessage] = useState("")
-
-  // Database
-  const [images, setImages] = useState([])
-
-  // Get data from server
-  const fetchData = async () => {
+  
+  
+  // Get data from server  -- url
+  const getData = async () => {
     try {
       const responseJson = await fetch(url)
       const responseObject = responseJson.json()
@@ -26,25 +27,24 @@ function App() {
       console.error(error)
       return error
     }
-  } // ** returns with an object array
+  }
 
   // Call Fetch function and set database state
-  const getImagesDatabase = async () => {
-    const imagesData = await fetchData()
-    // console.log(imagesData)
+  const initPage = async () => {
+    const imagesData = await getData()
     setImages(imagesData)
   }
 
 
 
-  // Kick in onMount
+  // Kick in window:onLoad
   useEffect(() => {
-    getImagesDatabase()
+    initPage()
   }, [])
 
 
 
-  // REMOVE image: DELETE HTTP request and re-render
+  // REMOVE image: DELETE HTTP request and re-render     -- setServerMessage, initpage
   const makeDeleteImageFunction = (imageId) => async (event) => {
     const deleteRequestObject = { id: imageId }
     const options = {
@@ -53,14 +53,16 @@ function App() {
       body: JSON.stringify(deleteRequestObject)
     }
     const response = await fetch(url, options)
-    getImagesDatabase()
+    setServerMessage((response.status === 200) ? "Image deleted server." : "Response status: " + response.status)
+
+    initPage()
   }
 
 
-  // UPLOAD image: POST HTTP request and re-render
+  // UPLOAD image: POST HTTP request and re-render           --setServerMessage, titleInput, authorInput, fileInputValue, selectedFile, az összes set..., initPage
   const uploadHandler = async () => {
     setServerMessage("")
-    if (!titleInput || !authorInput) {
+    if (!titleInput || !authorInput || !fileInputValue) {
       setServerMessage("Please choose a file and fill all fields before uploading!")
       return false
     }
@@ -77,7 +79,7 @@ function App() {
       setFileInputValue("")
       setSelectedFile({})
 
-      getImagesDatabase()
+      initPage()
     }
   }
 
