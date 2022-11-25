@@ -46,6 +46,7 @@ input {
   font-size: 2rem;
   font-weight: bold;
   color: navy;
+  padding-left: 1rem;
 }
 
 /* * END OF UPLOAD BAR SECTION */

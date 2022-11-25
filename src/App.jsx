@@ -1,11 +1,18 @@
-import { useEffect, useState } from 'react'
-import './App.css'
+import { useEffect, useState } from "react"
+import "./App.css"
 
-const url = "http://localhost:7767/images"
+import getData from "./api/GetData.js"
+import makeDeleteImageFunction from "./api/MakeDeleteData.js"
+
+import ImageCard from "./components/ImageCard.jsx"
+
+
+// Set api URL here
+export const url = "http://localhost:7767/images"
 
 
 function App() {
-  
+
   // Database
   const [images, setImages] = useState([])
 
@@ -14,20 +21,7 @@ function App() {
   const [fileInputValue, setFileInputValue] = useState("")
   const [selectedFile, setSelectedFile] = useState({})
   const [serverMessage, setServerMessage] = useState("")
-  
-  
-  // Get data from server  -- url
-  const getData = async () => {
-    try {
-      const responseJson = await fetch(url)
-      const responseObject = responseJson.json()
-      return responseObject
-    }
-    catch (error) {
-      console.error(error)
-      return error
-    }
-  }
+
 
   // Call Fetch function and set database state
   const initPage = async () => {
@@ -35,31 +29,16 @@ function App() {
     setImages(imagesData)
   }
 
-
-
   // Kick in window:onLoad
   useEffect(() => {
     initPage()
   }, [])
 
 
-
-  // REMOVE image: DELETE HTTP request and re-render     -- setServerMessage, initpage
-  const makeDeleteImageFunction = (imageId) => async (event) => {
-    const deleteRequestObject = { id: imageId }
-    const options = {
-      method: "DELETE",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(deleteRequestObject)
-    }
-    const response = await fetch(url, options)
-    setServerMessage((response.status === 200) ? "Image deleted server." : "Response status: " + response.status)
-
-    initPage()
-  }
-
-
-  // UPLOAD image: POST HTTP request and re-render           --setServerMessage, titleInput, authorInput, fileInputValue, selectedFile, az összes set..., initPage
+  // !! UPLOAD image: POST HTTP request and re-render
+  //     setServerMessage, setTitleInput, setAuthorInput, setFileInputValue, setSelectedFile
+  //     titleInput, authorInput, fileInputValue, selectedFile,
+  //     initPage
   const uploadHandler = async () => {
     setServerMessage("")
     if (!titleInput || !authorInput || !fileInputValue) {
@@ -89,7 +68,7 @@ function App() {
 
       <div id='upload-section'>
         <section id='uploadsection'>
-          
+
           <input
             type="file"
             id="file-input"
@@ -132,24 +111,15 @@ function App() {
 
 
       <div id='imageGridContainer'>
-        {
-          images.map(image => (image &&
-            <div key={image.id} id={"card-" + image.id} className="imageCard">
-              <div className="removeButton">
-                <span className="material-symbols-outlined" onClick={makeDeleteImageFunction(image.id)}>
-                  delete
-                </span>
-              </div>
-              <img src={image.url} alt={image.title} />
-              <h4>
-                {image.title}
-              </h4>
-              <h5>
-                {image.photographer}
-              </h5>
-            </div>
-          ))
-        }
+        {/* {images.map(image => (image && ImageCard(image, initPage, setServerMessage)))} */}
+        {images.map(image => (image &&
+          <ImageCard
+            image={image}
+            initPage={initPage}
+            setServerMessage={setServerMessage}
+          />
+        ))}
+
       </div>
 
     </div>
