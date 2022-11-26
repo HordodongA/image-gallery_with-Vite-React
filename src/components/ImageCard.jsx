@@ -1,10 +1,8 @@
-import makeDeleteImageFunction from "../api/MakeDeleteData.js"
-
-function ImageCard({ image, initPage, setServerMessage }) {
+function ImageCard({ image, onClickFunction }) {
     return (
-        <div key={image.id} id={"card-" + image.id} className="imageCard">
-            <div className="removeButton">
-                <span className="material-symbols-outlined" onClick={makeDeleteImageFunction(image.id, initPage, setServerMessage)}>
+        <div id={"card-" + image.id} className="imageCard">
+            <div className="removeButton" onClick={onClickFunction(image.id)}>
+                <span className="material-symbols-outlined">
                     delete
                 </span>
             </div>

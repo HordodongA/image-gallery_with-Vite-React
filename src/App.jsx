@@ -2,10 +2,10 @@ import { useEffect, useState } from "react"
 import "./App.css"
 
 import getData from "./api/GetData.js"
-import makeDeleteImageFunction from "./api/MakeDeleteData.js"
+import postData from "./api/PostData"
+import deleteData from "./api/DeleteData.js"
 
 import ImageCard from "./components/ImageCard.jsx"
-
 
 // Set api URL here
 export const url = "http://localhost:7767/images"
@@ -13,7 +13,7 @@ export const url = "http://localhost:7767/images"
 
 function App() {
 
-  // Database
+  // App state
   const [images, setImages] = useState([])
 
   const [titleInput, setTitleInput] = useState("")
@@ -23,7 +23,7 @@ function App() {
   const [serverMessage, setServerMessage] = useState("")
 
 
-  // Call Fetch function and set database state
+  // Call Fetch function and set App state
   const initPage = async () => {
     const imagesData = await getData()
     setImages(imagesData)
@@ -34,35 +34,38 @@ function App() {
     initPage()
   }, [])
 
+  const resetForm = () => {
+    setTitleInput("")
+    setAuthorInput("")
+    setFileInputValue("")
+    setSelectedFile({})
+  }
 
-  // !! UPLOAD image: POST HTTP request and re-render
-  //     setServerMessage, setTitleInput, setAuthorInput, setFileInputValue, setSelectedFile
-  //     titleInput, authorInput, fileInputValue, selectedFile,
-  //     initPage
+  const deleteHandler = (imageId) => async () => {
+    const response = await deleteData(imageId)
+    setServerMessage((response === 200) ? "Image deleted from server." : "Response status: " + response.status)
+    initPage()
+  }
+
   const uploadHandler = async () => {
-    setServerMessage("")
     if (!titleInput || !authorInput || !fileInputValue) {
       setServerMessage("Please choose a file and fill all fields before uploading!")
       return false
     }
-    else {
-      const formData = new FormData()
-      formData.append("titleinput", titleInput)
-      formData.append("authorinput", authorInput)
-      formData.append("fileinput", selectedFile)
 
-      const response = await fetch(url, { method: "POST", body: formData })
-      setServerMessage((response.status === 201) ? "Image and data saved on server." : "Response status: " + response.status)
-      setTitleInput("")
-      setAuthorInput("")
-      setFileInputValue("")
-      setSelectedFile({})
+    const formData = new FormData()
+    formData.append("titleinput", titleInput)
+    formData.append("authorinput", authorInput)
+    formData.append("fileinput", selectedFile)
 
-      initPage()
-    }
+    const response = await postData(formData)
+    setServerMessage((response === 201) ? "Image and data saved on server." : "Response status: " + response)
+
+    resetForm()
+    initPage()
   }
 
-
+  
   return (
     <div className="App">
 
@@ -111,12 +114,12 @@ function App() {
 
 
       <div id='imageGridContainer'>
-        {/* {images.map(image => (image && ImageCard(image, initPage, setServerMessage)))} */}
+        {/* {images.map(image => (image && ImageCard({key:image.id, image, initPage, setServerMessage})))} */}
         {images.map(image => (image &&
           <ImageCard
+            key={image.id}
             image={image}
-            initPage={initPage}
-            setServerMessage={setServerMessage}
+            onClickFunction={deleteHandler}
           />
         ))}
 
